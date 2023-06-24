@@ -22,7 +22,18 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
-  const handleSearchChange = (e) => {};
+  const filteredPosts = posts.filter((post) => {
+    const searchTerm = searchText.toLowerCase().trim();
+    return (
+      post.creator.username.toLowerCase().includes(searchTerm) ||
+      post.prompt.toLowerCase().includes(searchTerm) ||
+      post.tag.toLowerCase().includes(searchTerm)
+    );
+  });
+
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -46,7 +57,7 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList data={posts} handleTagClick={() => {}} />
+      <PromptCardList data={filteredPosts} handleTagClick={() => {}} />
     </section>
   );
 };
