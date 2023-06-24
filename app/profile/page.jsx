@@ -2,29 +2,24 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import Profile from "@components/Profile";
 
-const UserProfile = () => {
+const MyProfile = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const name = searchParams.get("name");
 
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(
-        `/api/users/${id ? id : session?.user.id}/posts`
-      );
+      const response = await fetch(`/api/users/${session?.user.id}/posts`);
       const data = await response.json();
       setPosts(data);
     };
 
-    if (id || session?.user.id) {
+    if (session?.user.id) {
       fetchPosts();
     }
   }, []);
@@ -55,12 +50,8 @@ const UserProfile = () => {
 
   return (
     <Profile
-      name={name ? name : "My"}
-      desc={
-        name
-          ? `Welcome to ${name}'s personalized profile page. Explore ${name}'s exceptional prompts and be inspired by the power of their imagination.`
-          : "Welcome to your personalized profile page"
-      }
+      name="My"
+      desc="Welcome to your personalized profile page"
       data={posts}
       handleEdit={handleEdit}
       handleDelete={handleDelete}
@@ -68,4 +59,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default MyProfile;
